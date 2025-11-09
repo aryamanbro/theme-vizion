@@ -1,55 +1,58 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { TrendingUp, TrendingDown } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { Skeleton } from "@/components/ui/skeleton";
 
-interface LiveTickerProps {
+const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+
+interface TickerData {
   symbol: string;
-  // Expected API response shape:
-  // { price: number, change: number, changePercent: number }
+  price: number;
+  change: number;
+  percent_change: number;
 }
 
-export const LiveTicker = ({ symbol }: LiveTickerProps) => {
-  const [data, setData] = useState({
-    price: 0,
-    change: 0,
-    changePercent: 0,
+const fetchLivePrice = async (symbol: string): Promise<TickerData> => {
+  const response = await fetch(`${API_URL}/api/v1/live-price?symbol=${symbol}`);
+  if (!response.ok) {
+    throw new Error("Failed to fetch live price");
+  }
+  return response.json();
+};
+
+export const LiveTicker = ({ symbol }: { symbol: string }) => {
+  // Use react-query to fetch and auto-refetch
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["livePrice", symbol],
+    queryFn: () => fetchLivePrice(symbol),
+    // This makes it real-time!
+    refetchInterval: 10000, // 10 seconds
   });
-  const [isFlashing, setIsFlashing] = useState(false);
-  const [previousPrice, setPreviousPrice] = useState(0);
 
-  // TODO: Replace with actual API call
-  useEffect(() => {
-    // Mock data update - replace with your API endpoint
-    const fetchPrice = () => {
-      // Example: fetch(`/api/ticker/${symbol}`)
-      //   .then(res => res.json())
-      //   .then(data => setData(data))
-      
-      // Mock data for demonstration
-      const mockPrice = 150 + Math.random() * 10;
-      const mockChange = mockPrice - (data.price || mockPrice);
-      const mockChangePercent = (mockChange / mockPrice) * 100;
+  const [isFlashing, setIsFlashing] = useState("");
 
-      setPreviousPrice(data.price);
-      setData({
-        price: mockPrice,
-        change: mockChange,
-        changePercent: mockChangePercent,
-      });
+  if (isLoading) {
+    return (
+      <div className="glass-card p-6 animate-fade-in-up">
+        <Skeleton className="h-5 w-1/3 mb-2" />
+        <Skeleton className="h-10 w-3/4 mb-2" />
+        <Skeleton className="h-5 w-1/2" />
+      </div>
+    );
+  }
 
-      // Trigger flash animation
-      if (data.price !== 0) {
-        setIsFlashing(true);
-        setTimeout(() => setIsFlashing(false), 500);
-      }
-    };
+  if (error || !data) {
+    return (
+      <div className="glass-card p-6 animate-fade-in-up">
+        <p className="text-destructive">Error loading ticker.</p>
+      </div>
+    );
+  }
 
-    fetchPrice();
-    const interval = setInterval(fetchPrice, 3000);
-    return () => clearInterval(interval);
-  }, [symbol]);
-
-  const isPositive = data.change >= 0;
+  const isPositive = data.percent_change >= 0;
   const priceChangeClass = isPositive ? "text-positive" : "text-negative";
+  
+  // Basic flash effect on change (you can improve this)
   const flashClass = isFlashing
     ? isPositive
       ? "animate-flash-positive"
@@ -75,7 +78,7 @@ export const LiveTicker = ({ symbol }: LiveTickerProps) => {
 
       <div className={`flex items-center gap-2 text-sm font-medium ${priceChangeClass}`}>
         <span>{isPositive ? "+" : ""}{data.change.toFixed(2)}</span>
-        <span>({isPositive ? "+" : ""}{data.changePercent.toFixed(2)}%)</span>
+        <span>({isPositive ? "+" : ""}{data.percent_change.toFixed(2)}%)</span>
       </div>
     </div>
   );

@@ -2,107 +2,142 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
-
 @layer base {
+  /* 1. Default Light Theme (Keep as-is) */
   :root {
     --background: 210 40% 98%;
     --foreground: 222 47% 11%;
-
     --card: 0 0% 100%;
     --card-foreground: 222 47% 11%;
-
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
-
-    --primary: 217 91% 60%;
+    --primary: 217 91% 60%; /* Blue */
     --primary-foreground: 0 0% 100%;
-
     --secondary: 210 40% 96%;
     --secondary-foreground: 222 47% 11%;
-
     --muted: 210 40% 96%;
     --muted-foreground: 215 16% 47%;
-
     --accent: 210 40% 96%;
     --accent-foreground: 222 47% 11%;
-
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-
     --success: 142 76% 36%;
     --success-foreground: 0 0% 100%;
-
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
-
     --border: 214 32% 91%;
     --input: 214 32% 91%;
     --ring: 217 91% 60%;
-
     --radius: 0.75rem;
-
     --chart-gradient-start: 217 91% 60%;
     --chart-gradient-end: 142 76% 36%;
-
     --glass-bg: 0 0% 100%;
     --glass-border: 214 32% 91%;
-
     --positive: 142 76% 36%;
     --negative: 0 84% 60%;
-
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  .dark {
-    --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
-
-    --card: 217 33% 17%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 217 33% 17%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 217 91% 60%;
+  /* 2. Default Dark Theme: Dark Red */
+  [data-theme="dark-red"] {
+    --background: 0 30% 8%; /* Very dark red */
+    --foreground: 0 70% 95%; /* Light pink/red */
+    --card: 0 30% 12%; /* Dark red card base */
+    --card-foreground: 0 70% 95%;
+    --popover: 0 30% 12%;
+    --popover-foreground: 0 70% 95%;
+    --primary: 0 72% 60%; /* Bright red */
     --primary-foreground: 0 0% 100%;
-
-    --secondary: 217 33% 17%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
-
-    --accent: 217 33% 17%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 210 40% 98%;
-
+    --secondary: 0 40% 20%;
+    --secondary-foreground: 0 70% 95%;
+    --muted: 0 40% 20%;
+    --muted-foreground: 0 30% 65%;
+    --accent: 0 40% 20%;
+    --accent-foreground: 0 70% 95%;
+    --destructive: 0 63% 40%;
+    --destructive-foreground: 0 70% 95%;
     --success: 142 76% 36%;
     --success-foreground: 0 0% 100%;
-
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
-
-    --border: 217 33% 17%;
-    --input: 217 33% 17%;
-    --ring: 217 91% 60%;
-
-    --chart-gradient-start: 217 91% 60%;
+    --border: 0 40% 25%;
+    --input: 0 40% 25%;
+    --ring: 0 72% 60%;
+    --chart-gradient-start: 0 72% 60%;
     --chart-gradient-end: 142 76% 36%;
-
-    --glass-bg: 217 33% 14%;
-    --glass-border: 217 33% 20%;
-
+    --glass-bg: 0 30% 12%; /* This is your "glass" color */
+    --glass-border: 0 40% 25%;
     --positive: 142 76% 46%;
     --negative: 0 84% 60%;
   }
-}
 
-@layer base {
+  /* 3. Dark Blue Theme */
+  [data-theme="dark-blue"] {
+    --background: 217 30% 8%; /* Very dark blue */
+    --foreground: 210 70% 95%; /* Light blue */
+    --card: 217 30% 12%;
+    --card-foreground: 210 70% 95%;
+    --popover: 217 30% 12%;
+    --popover-foreground: 210 70% 95%;
+    --primary: 217 91% 60%; /* Bright blue */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 217 40% 20%;
+    --secondary-foreground: 210 70% 95%;
+    --muted: 217 40% 20%;
+    --muted-foreground: 215 30% 65%;
+    --accent: 217 40% 20%;
+    --accent-foreground: 210 70% 95%;
+    --destructive: 0 63% 40%;
+    --destructive-foreground: 210 70% 95%;
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    --border: 217 40% 25%;
+    --input: 217 40% 25%;
+    --ring: 217 91% 60%;
+    --chart-gradient-start: 217 91% 60%;
+    --chart-gradient-end: 142 76% 36%;
+    --glass-bg: 217 30% 12%; /* This is your "glass" color */
+    --glass-border: 217 40% 25%;
+    --positive: 142 76% 46%;
+    --negative: 0 84% 60%;
+  }
+
+  /* 4. Dark Purple Theme */
+  [data-theme="dark-purple"] {
+    --background: 260 30% 8%; /* Very dark purple */
+    --foreground: 270 70% 95%; /* Light purple */
+    --card: 260 30% 12%;
+    --card-foreground: 270 70% 95%;
+    --popover: 260 30% 12%;
+    --popover-foreground: 270 70% 95%;
+    --primary: 265 90% 65%; /* Bright purple */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 260 40% 20%;
+    --secondary-foreground: 270 70% 95%;
+    --muted: 260 40% 20%;
+    --muted-foreground: 260 30% 65%;
+    --accent: 260 40% 20%;
+    --accent-foreground: 270 70% 95%;
+    --destructive: 0 63% 40%;
+    --destructive-foreground: 270 70% 95%;
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    --border: 260 40% 25%;
+    --input: 260 40% 25%;
+    --ring: 265 90% 65%;
+    --chart-gradient-start: 265 90% 65%;
+    --chart-gradient-end: 142 76% 36%;
+    --glass-bg: 260 30% 12%; /* This is your "glass" color */
+    --glass-border: 260 40% 25%;
+    --positive: 142 76% 46%;
+    --negative: 0 84% 60%;
+  }
+
+  /* --- Base styles, animations, and utilities --- */
   * {
     @apply border-border;
   }
@@ -112,13 +147,23 @@ All colors MUST be HSL.
   }
 
   @keyframes flash-positive {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.6; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.6;
+    }
   }
 
   @keyframes flash-negative {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.6; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.6;
+    }
   }
 
   @keyframes fade-in-up {
@@ -135,6 +180,10 @@ All colors MUST be HSL.
 
 @layer utilities {
   .glass-card {
+    /* This is the magic! 
+      It uses your --glass-bg variable and makes it 80% transparent.
+      It also uses backdrop-blur-lg to make it "frosty".
+    */
     @apply bg-glass-bg/80 backdrop-blur-lg border border-glass-border rounded-lg shadow-lg;
   }
 

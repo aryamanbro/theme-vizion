@@ -1,120 +1,215 @@
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Area,
+  Bar,
+  ComposedChart,
+  Line,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  CartesianGrid, // <--- Add this
+} from "recharts";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  ChartLegend,
+  ChartLegendContent,
+  type ChartConfig,
+} from "@/components/ui/chart";
 
-interface ChartDataPoint {
+// Get the API URL from the environment
+const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+
+// Define the shape of our API data
+interface ChartData {
   time: string;
-  value: number;
+  close: number | null;
+  google_score: number | null;
+  avg_sentiment: number | null;
 }
 
-interface MainChartProps {
-  symbol: string;
-  // Expected API response: ChartDataPoint[]
-}
+// Helper to fetch data
+const fetchChartData = async (symbol: string): Promise<ChartData[]> => {
+  const response = await fetch(`${API_URL}/api/v1/chart-data?symbol=${symbol}`);
+  if (!response.ok) {
+    throw new Error("Network response was not ok");
+  }
+  const data = await response.json();
+  
+  // Format the data for the chart
+  return data.data.map((d: ChartData) => ({
+    ...d,
+    time: new Date(d.time).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
+    close: d.close ? parseFloat(d.close.toFixed(2)) : null,
+    google_score: d.google_score ? parseFloat(d.google_score.toFixed(2)) : null,
+    avg_sentiment: d.avg_sentiment ? parseFloat(d.avg_sentiment.toFixed(2)) : null,
+  }));
+};
 
-export const MainChart = ({ symbol }: MainChartProps) => {
-  const [data, setData] = useState<ChartDataPoint[]>([]);
-  const [timeframe, setTimeframe] = useState<"1D" | "1W" | "1M" | "1Y">("1W");
-  const [loading, setLoading] = useState(false);
+// Define our chart's series, colors, and labels
+const chartConfig = {
+  close: {
+    label: "Price",
+    color: "hsl(var(--primary))",
+  },
+  avg_sentiment: {
+    label: "Sentiment",
+    color: "hsl(var(--warning))",
+  },
+  google_score: {
+    label: "Google Trends",
+    color: "hsl(var(--destructive))",
+  },
+} satisfies ChartConfig;
 
-  useEffect(() => {
-    setLoading(true);
+export const MainChart = ({ symbol }: { symbol: string }) => {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["chartData", symbol],
+    queryFn: () => fetchChartData(symbol),
+  });
+
+  // Calculate domains for Y-axes
+  const [priceDomain, trendDomain, sentimentDomain] = useMemo(() => {
+    if (!data) return [["auto", "auto"], ["auto", "auto"], ["auto", "auto"]];
     
-    // TODO: Replace with actual API call
-    // fetch(`/api/chart/${symbol}?timeframe=${timeframe}`)
-    //   .then(res => res.json())
-    //   .then(data => setData(data))
-    //   .finally(() => setLoading(false))
+    const prices = data.map(d => d.close).filter(Boolean) as number[];
+    const trends = data.map(d => d.google_score).filter(Boolean) as number[];
+    const sentiments = data.map(d => d.avg_sentiment).filter(Boolean) as number[];
 
-    // Mock data for demonstration
-    const mockData: ChartDataPoint[] = Array.from({ length: 50 }, (_, i) => ({
-      time: new Date(Date.now() - (50 - i) * 86400000).toISOString(),
-      value: 150 + Math.random() * 20 + Math.sin(i / 5) * 10,
-    }));
+    const priceMin = Math.min(...prices);
+    const priceMax = Math.max(...prices);
+    
+    const trendMin = Math.min(...trends);
+    const trendMax = Math.max(...trends);
+    
+    const sentMin = Math.min(...sentiments, -1);
+    const sentMax = Math.max(...sentiments, 1);
 
-    setTimeout(() => {
-      setData(mockData);
-      setLoading(false);
-    }, 500);
-  }, [symbol, timeframe]);
+    return [
+      [Math.floor(priceMin * 0.95), Math.ceil(priceMax * 1.05)],
+      [Math.floor(trendMin * 0.9), Math.ceil(trendMax * 1.1)],
+      [Math.max(-1, sentMin * 1.1), Math.min(1, sentMax * 1.1)]
+    ];
+  }, [data]);
 
-  const minValue = Math.min(...data.map(d => d.value));
-  const maxValue = Math.max(...data.map(d => d.value));
-  const range = maxValue - minValue;
 
-  const getYPosition = (value: number) => {
-    return ((maxValue - value) / range) * 100;
-  };
+  if (isLoading) {
+    return (
+      <Card className="glass-card p-6 animate-fade-in-up">
+        <Skeleton className="h-[450px] w-full" />
+      </Card>
+    );
+  }
 
-  const pathData = data
-    .map((point, index) => {
-      const x = (index / (data.length - 1)) * 100;
-      const y = getYPosition(point.value);
-      return `${index === 0 ? 'M' : 'L'} ${x} ${y}`;
-    })
-    .join(' ');
-
-  const gradientId = `gradient-${symbol}`;
+  if (error || !data) {
+    return (
+      <Card className="glass-card p-6 animate-fade-in-up">
+        <div className="flex h-[450px] w-full items-center justify-center">
+          <p className="text-destructive">Error loading chart data.</p>
+        </div>
+      </Card>
+    );
+  }
 
   return (
     <Card className="glass-card p-6 animate-fade-in-up">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-semibold">Price Chart</h2>
-        <div className="flex gap-2">
-          {(["1D", "1W", "1M", "1Y"] as const).map((tf) => (
-            <Button
-              key={tf}
-              variant={timeframe === tf ? "default" : "outline"}
-              size="sm"
-              onClick={() => setTimeframe(tf)}
-              className="transition-smooth"
-            >
-              {tf}
-            </Button>
-          ))}
-        </div>
-      </div>
+      <h2 className="text-xl font-semibold mb-6">Price & Sentiment Analysis: {symbol}</h2>
+      
+      <ChartContainer config={chartConfig} className="h-[400px] w-full">
+        <ResponsiveContainer>
+          <ComposedChart data={data}>
+            <CartesianGrid vertical={false} stroke="hsl(var(--border))" strokeDasharray="3 3" />
+            
+            <XAxis
+              dataKey="time"
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              tickFormatter={(value) => value.slice(0, 3)}
+            />
+            
+            <YAxis
+              yAxisId="left"
+              dataKey="close"
+              domain={priceDomain}
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              tickFormatter={(value) => `$${value}`}
+              stroke="hsl(var(--primary))"
+            />
+            <YAxis
+              yAxisId="right"
+              dataKey="avg_sentiment"
+              domain={sentimentDomain}
+              orientation="right"
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              tickFormatter={(value) => value.toFixed(1)}
+              stroke="hsl(var(--warning))"
+            />
+            <YAxis
+              yAxisId="right-trends"
+              dataKey="google_score"
+              domain={trendDomain}
+              orientation="right"
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              tickFormatter={(value) => `${value}`}
+              stroke="hsl(var(--destructive))"
+              hide={true} // Hide axis, as it conflicts with sentiment
+            />
 
-      <div className="relative h-80 w-full">
-        {loading ? (
-          <div className="flex items-center justify-center h-full">
-            <div className="animate-pulse text-muted-foreground">Loading chart...</div>
-          </div>
-        ) : (
-          <svg
-            viewBox="0 0 100 100"
-            preserveAspectRatio="none"
-            className="w-full h-full"
-          >
+            <Tooltip content={<ChartTooltipContent hideIndicator />} />
+            
+            <Legend content={<ChartLegendContent />} />
+
             <defs>
-              <linearGradient id={gradientId} x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="hsl(var(--chart-gradient-start))" stopOpacity="0.3" />
-                <stop offset="100%" stopColor="hsl(var(--chart-gradient-end))" stopOpacity="0.05" />
+              <linearGradient id="fillPrice" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="var(--color-close)" stopOpacity={0.8} />
+                <stop offset="95%" stopColor="var(--color-close)" stopOpacity={0.1} />
               </linearGradient>
             </defs>
             
-            {/* Area under the line */}
-            <path
-              d={`${pathData} L 100 100 L 0 100 Z`}
-              fill={`url(#${gradientId})`}
+            {/* --- Data Series --- */}
+            
+            <Area
+              dataKey="close"
+              type="monotone"
+              fill="url(#fillPrice)"
+              stroke="var(--color-close)"
+              strokeWidth={2}
+              yAxisId="left"
+              dot={false}
             />
             
-            {/* The line itself */}
-            <path
-              d={pathData}
-              fill="none"
-              stroke="hsl(var(--primary))"
-              strokeWidth="0.5"
-              className="transition-smooth"
+            <Line
+              dataKey="google_score"
+              type="monotone"
+              stroke="var(--color-google_score)"
+              strokeWidth={2}
+              yAxisId="right-trends"
+              dot={false}
             />
-          </svg>
-        )}
-      </div>
 
-      <div className="flex justify-between mt-4 text-sm text-muted-foreground">
-        <span>Low: ${minValue.toFixed(2)}</span>
-        <span>High: ${maxValue.toFixed(2)}</span>
-      </div>
+            <Bar
+              dataKey="avg_sentiment"
+              yAxisId="right"
+              fill="var(--color-avg_sentiment)"
+              fillOpacity={0.5}
+            />
+
+          </ComposedChart>
+        </ResponsiveContainer>
+      </ChartContainer>
     </Card>
   );
 };
