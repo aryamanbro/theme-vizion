@@ -12,11 +12,12 @@ interface NewsItem {
   headline: string;
   source_name: string;
   time: string;
+  url: string; // Add url field to use it
 }
 
 interface NewsFeedProps {
   symbol: string;
-  sentiment: "positive" | "negative"; // Removed "all" as it's not needed
+  sentiment: "positive" | "negative";
 }
 
 // Fetcher function
@@ -32,15 +33,20 @@ const fetchNews = async (
   return data.data;
 };
 
+// 5 minutes in milliseconds
+const NEWS_REFETCH_INTERVAL = 300000; 
+
 export const NewsFeed = ({ symbol, sentiment }: NewsFeedProps) => {
-  // Use react-query to fetch news
   const {
     data: news,
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["news", symbol, sentiment], // Re-fetches when symbol or sentiment changes
+    queryKey: ["news", symbol, sentiment],
     queryFn: () => fetchNews(symbol, sentiment),
+    // --- THIS IS THE FIX ---
+    // Add a refetch interval to automatically check for new news
+    refetchInterval: NEWS_REFETCH_INTERVAL, 
   });
 
   const formatTimeAgo = (dateString: string) => {
@@ -91,7 +97,8 @@ export const NewsFeed = ({ symbol, sentiment }: NewsFeedProps) => {
           <div className="space-y-4 pr-4">
             {news.map((item, index) => (
               <a
-                href={`https://www.google.com/search?q=${encodeURIComponent(
+                // Use item.url if available, otherwise search Google
+                href={item.url || `https://www.google.com/search?q=${encodeURIComponent(
                   item.headline
                 )}`}
                 target="_blank"
