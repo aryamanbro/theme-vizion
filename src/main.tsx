@@ -1,5 +1,3 @@
-// src/main.tsx
-
 import { createRoot } from "react-dom/client";
 import { ThemeProvider } from "next-themes";
 import App from "./App.tsx";
@@ -9,7 +7,14 @@ createRoot(document.getElementById("root")!).render(
   <ThemeProvider
     attribute="data-theme"
     defaultTheme="dark-red"
-    themes={["light", "dark-red", "dark-blue", "dark-purple"]}
+    themes={[
+      "light",
+      "dark-red",
+      "dark-blue",
+      "dark-purple",
+      "dark-green", // New
+      "dark-orange", // New
+    ]}
   >
     <App />
   </ThemeProvider>,

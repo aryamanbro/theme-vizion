@@ -1,5 +1,6 @@
-import { Moon, Sun, Paintbrush } from "lucide-react";
+import { Moon, Paintbrush, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
+
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -14,13 +15,12 @@ export const ThemeToggle = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           size="icon"
           className="transition-smooth hover:scale-105"
           aria-label="Toggle theme"
         >
-          {/* Default icon */}
           <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
           <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
           <span className="sr-only">Toggle theme</span>
@@ -42,6 +42,15 @@ export const ThemeToggle = () => {
         <DropdownMenuItem onClick={() => setTheme("dark-purple")}>
           <Paintbrush className="mr-2 h-4 w-4" />
           <span>Dark Purple</span>
+        </DropdownMenuItem>
+        {/* --- ADD THESE TWO --- */}
+        <DropdownMenuItem onClick={() => setTheme("dark-green")}>
+          <Paintbrush className="mr-2 h-4 w-4" />
+          <span>Dark Green</span>
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme("dark-orange")}>
+          <Paintbrush className="mr-2 h-4 w-4" />
+          <span>Dark Orange</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

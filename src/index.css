@@ -2,8 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+/* This file defines your entire design system.
+  We are keeping your light theme and adding three new dark themes.
+*/
+
 @layer base {
-  /* 1. Default Light Theme (Keep as-is) */
+  /* 1. Default Light Theme (Neutral) */
   :root {
     --background: 210 40% 98%;
     --foreground: 222 47% 11%;
@@ -136,6 +140,71 @@
     --positive: 142 76% 46%;
     --negative: 0 84% 60%;
   }
+  /* 5. Dark Green Theme */
+  [data-theme="dark-green"] {
+    --background: 140 30% 8%; /* Very dark green */
+    --foreground: 140 70% 95%; /* Light green */
+    --card: 140 30% 12%;
+    --card-foreground: 140 70% 95%;
+    --popover: 140 30% 12%;
+    --popover-foreground: 140 70% 95%;
+    --primary: 145 90% 45%; /* Bright green */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 140 40% 20%;
+    --secondary-foreground: 140 70% 95%;
+    --muted: 140 40% 20%;
+    --muted-foreground: 140 30% 65%;
+    --accent: 140 40% 20%;
+    --accent-foreground: 140 70% 95%;
+    --destructive: 0 63% 40%;
+    --destructive-foreground: 140 70% 95%;
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    --border: 140 40% 25%;
+    --input: 140 40% 25%;
+    --ring: 145 90% 45%;
+    --chart-gradient-start: 145 90% 45%;
+    --chart-gradient-end: 217 91% 60%;
+    --glass-bg: 140 30% 12%;
+    --glass-border: 140 40% 25%;
+    --positive: 142 76% 46%;
+    --negative: 0 84% 60%;
+  }
+
+  /* 6. Dark Orange Theme */
+  [data-theme="dark-orange"] {
+    --background: 25 30% 8%; /* Very dark orange */
+    --foreground: 30 70% 95%; /* Light orange */
+    --card: 25 30% 12%;
+    --card-foreground: 30 70% 95%;
+    --popover: 25 30% 12%;
+    --popover-foreground: 30 70% 95%;
+    --primary: 28 100% 55%; /* Bright orange */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 25 40% 20%;
+    --secondary-foreground: 30 70% 95%;
+    --muted: 25 40% 20%;
+    --muted-foreground: 25 30% 65%;
+    --accent: 25 40% 20%;
+    --accent-foreground: 30 70% 95%;
+    --destructive: 0 63% 40%;
+    --destructive-foreground: 30 70% 95%;
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    --border: 25 40% 25%;
+    --input: 25 40% 25%;
+    --ring: 28 100% 55%;
+    --chart-gradient-start: 28 100% 55%;
+    --chart-gradient-end: 38 92% 50%;
+    --glass-bg: 25 30% 12%;
+    --glass-border: 25 40% 25%;
+    --positive: 142 76% 46%;
+    --negative: 0 84% 60%;
+  }
 
   /* --- Base styles, animations, and utilities --- */
   * {
@@ -180,10 +249,7 @@
 
 @layer utilities {
   .glass-card {
-    /* This is the magic! 
-      It uses your --glass-bg variable and makes it 80% transparent.
-      It also uses backdrop-blur-lg to make it "frosty".
-    */
+    /* This applies your glass effect */
     @apply bg-glass-bg/80 backdrop-blur-lg border border-glass-border rounded-lg shadow-lg;
   }
 

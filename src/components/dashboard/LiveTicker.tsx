@@ -29,7 +29,8 @@ export const LiveTicker = ({ symbol }: { symbol: string }) => {
     refetchInterval: 10000, // 10 seconds
   });
 
-  const [isFlashing, setIsFlashing] = useState("");
+  // We'll keep this state for the flash animation
+  const [flashClass, setFlashClass] = useState("");
 
   if (isLoading) {
     return (
@@ -44,21 +45,20 @@ export const LiveTicker = ({ symbol }: { symbol: string }) => {
   if (error || !data) {
     return (
       <div className="glass-card p-6 animate-fade-in-up">
-        <p className="text-destructive">Error loading ticker.</p>
+        <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+          {symbol}
+        </h2>
+        <p className="text-destructive mt-4">Error loading ticker data.</p>
       </div>
     );
   }
 
   const isPositive = data.percent_change >= 0;
   const priceChangeClass = isPositive ? "text-positive" : "text-negative";
-  
-  // Basic flash effect on change (you can improve this)
-  const flashClass = isFlashing
-    ? isPositive
-      ? "animate-flash-positive"
-      : "animate-flash-negative"
-    : "";
 
+  // TODO: You can wire up the flashClass logic here
+  // by comparing `data.price` with `previousPrice`
+  
   return (
     <div className="glass-card p-6 animate-fade-in-up">
       <div className="flex items-center justify-between mb-2">

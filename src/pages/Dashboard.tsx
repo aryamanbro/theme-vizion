@@ -36,7 +36,7 @@ const Dashboard = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Left Sidebar - Search & Ticker */}
           <div className="lg:col-span-3 space-y-6">
-            <div className="glass-card p-6 animate-fade-in-up">
+            <div className="glass-card p-6 animate-fade-in-up relative z-10">
               <h2 className="text-lg font-semibold mb-4">Symbol Search</h2>
               <SymbolSearch
                 onSelectSymbol={setSelectedSymbol}
