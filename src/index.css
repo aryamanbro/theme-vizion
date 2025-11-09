@@ -2,12 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-/* This file defines your entire design system.
-  We are keeping your light theme and adding three new dark themes.
-*/
-
 @layer base {
-  /* 1. Default Light Theme (Neutral) */
+  /* 1. Default Light Theme (Base) */
   :root {
     --background: 210 40% 98%;
     --foreground: 222 47% 11%;
@@ -32,7 +28,6 @@
     --border: 214 32% 91%;
     --input: 214 32% 91%;
     --ring: 217 91% 60%;
-    --radius: 0.75rem;
     --chart-gradient-start: 217 91% 60%;
     --chart-gradient-end: 142 76% 36%;
     --glass-bg: 0 0% 100%;
@@ -42,48 +37,15 @@
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* 2. Default Dark Theme: Dark Red */
-  [data-theme="dark-red"] {
-    --background: 0 30% 8%; /* Very dark red */
-    --foreground: 0 70% 95%; /* Light pink/red */
-    --card: 0 30% 12%; /* Dark red card base */
-    --card-foreground: 0 70% 95%;
-    --popover: 0 30% 12%;
-    --popover-foreground: 0 70% 95%;
-    --primary: 0 72% 60%; /* Bright red */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 0 40% 20%;
-    --secondary-foreground: 0 70% 95%;
-    --muted: 0 40% 20%;
-    --muted-foreground: 0 30% 65%;
-    --accent: 0 40% 20%;
-    --accent-foreground: 0 70% 95%;
-    --destructive: 0 63% 40%;
-    --destructive-foreground: 0 70% 95%;
-    --success: 142 76% 36%;
-    --success-foreground: 0 0% 100%;
-    --warning: 38 92% 50%;
-    --warning-foreground: 0 0% 100%;
-    --border: 0 40% 25%;
-    --input: 0 40% 25%;
-    --ring: 0 72% 60%;
-    --chart-gradient-start: 0 72% 60%;
-    --chart-gradient-end: 142 76% 36%;
-    --glass-bg: 0 30% 12%; /* This is your "glass" color */
-    --glass-border: 0 40% 25%;
-    --positive: 142 76% 46%;
-    --negative: 0 84% 60%;
-  }
-
-  /* 3. Dark Blue Theme */
+  /* 2. Dark Blue Theme (Base) */
   [data-theme="dark-blue"] {
-    --background: 217 30% 8%; /* Very dark blue */
-    --foreground: 210 70% 95%; /* Light blue */
+    --background: 217 30% 8%;
+    --foreground: 210 70% 95%;
     --card: 217 30% 12%;
     --card-foreground: 210 70% 95%;
     --popover: 217 30% 12%;
     --popover-foreground: 210 70% 95%;
-    --primary: 217 91% 60%; /* Bright blue */
+    --primary: 217 91% 60%; /* Blue */
     --primary-foreground: 0 0% 100%;
     --secondary: 217 40% 20%;
     --secondary-foreground: 210 70% 95%;
@@ -102,106 +64,142 @@
     --ring: 217 91% 60%;
     --chart-gradient-start: 217 91% 60%;
     --chart-gradient-end: 142 76% 36%;
-    --glass-bg: 217 30% 12%; /* This is your "glass" color */
+    --glass-bg: 217 30% 12%;
     --glass-border: 217 40% 25%;
     --positive: 142 76% 46%;
     --negative: 0 84% 60%;
   }
 
-  /* 4. Dark Purple Theme */
-  [data-theme="dark-purple"] {
-    --background: 260 30% 8%; /* Very dark purple */
-    --foreground: 270 70% 95%; /* Light purple */
-    --card: 260 30% 12%;
-    --card-foreground: 270 70% 95%;
-    --popover: 260 30% 12%;
-    --popover-foreground: 270 70% 95%;
-    --primary: 265 90% 65%; /* Bright purple */
+  /* --- NEW DUO-TONE THEMES --- */
+
+  /* 3. Dark Sunset Theme (Orange + Rose) */
+  [data-theme="dark-sunset"] {
+    --background: 20 20% 8%; /* Very dark brown */
+    --foreground: 30 70% 95%; /* Light orange */
+    --card: 20 20% 11%;
+    --card-foreground: 30 70% 95%;
+    --popover: 20 20% 8%;
+    --popover-foreground: 30 70% 95%;
+    --primary: 28 100% 55%; /* Bright Orange */
     --primary-foreground: 0 0% 100%;
-    --secondary: 260 40% 20%;
-    --secondary-foreground: 270 70% 95%;
-    --muted: 260 40% 20%;
-    --muted-foreground: 260 30% 65%;
-    --accent: 260 40% 20%;
-    --accent-foreground: 270 70% 95%;
-    --destructive: 0 63% 40%;
-    --destructive-foreground: 270 70% 95%;
+    --secondary: 350 50% 20%; /* Dark Rose */
+    --secondary-foreground: 30 70% 95%;
+    --muted: 350 50% 20%;
+    --muted-foreground: 25 30% 65%;
+    --accent: 350 50% 25%; /* Brighter Rose for accents */
+    --accent-foreground: 30 70% 95%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
     --success: 142 76% 36%;
     --success-foreground: 0 0% 100%;
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
-    --border: 260 40% 25%;
-    --input: 260 40% 25%;
-    --ring: 265 90% 65%;
-    --chart-gradient-start: 265 90% 65%;
-    --chart-gradient-end: 142 76% 36%;
-    --glass-bg: 260 30% 12%; /* This is your "glass" color */
-    --glass-border: 260 40% 25%;
-    --positive: 142 76% 46%;
-    --negative: 0 84% 60%;
-  }
-  /* 5. Dark Green Theme */
-  [data-theme="dark-green"] {
-    --background: 140 30% 8%; /* Very dark green */
-    --foreground: 140 70% 95%; /* Light green */
-    --card: 140 30% 12%;
-    --card-foreground: 140 70% 95%;
-    --popover: 140 30% 12%;
-    --popover-foreground: 140 70% 95%;
-    --primary: 145 90% 45%; /* Bright green */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 140 40% 20%;
-    --secondary-foreground: 140 70% 95%;
-    --muted: 140 40% 20%;
-    --muted-foreground: 140 30% 65%;
-    --accent: 140 40% 20%;
-    --accent-foreground: 140 70% 95%;
-    --destructive: 0 63% 40%;
-    --destructive-foreground: 140 70% 95%;
-    --success: 142 76% 36%;
-    --success-foreground: 0 0% 100%;
-    --warning: 38 92% 50%;
-    --warning-foreground: 0 0% 100%;
-    --border: 140 40% 25%;
-    --input: 140 40% 25%;
-    --ring: 145 90% 45%;
-    --chart-gradient-start: 145 90% 45%;
-    --chart-gradient-end: 217 91% 60%;
-    --glass-bg: 140 30% 12%;
-    --glass-border: 140 40% 25%;
+    --border: 350 50% 25%;
+    --input: 350 50% 25%;
+    --ring: 28 100% 55%;
+    --chart-gradient-start: 28 100% 55%;
+    --chart-gradient-end: 350 80% 60%;
+    --glass-bg: 20 20% 11%;
+    --glass-border: 350 50% 25%;
     --positive: 142 76% 46%;
     --negative: 0 84% 60%;
   }
 
-  /* 6. Dark Orange Theme */
-  [data-theme="dark-orange"] {
-    --background: 25 30% 8%; /* Very dark orange */
-    --foreground: 30 70% 95%; /* Light orange */
-    --card: 25 30% 12%;
-    --card-foreground: 30 70% 95%;
-    --popover: 25 30% 12%;
-    --popover-foreground: 30 70% 95%;
-    --primary: 28 100% 55%; /* Bright orange */
+  /* 4. Dark Ocean Theme (Cyan + Blue) */
+  [data-theme="dark-ocean"] {
+    --background: 210 30% 8%; /* Very dark blue */
+    --foreground: 180 70% 95%; /* Light cyan */
+    --card: 210 30% 12%;
+    --card-foreground: 180 70% 95%;
+    --popover: 210 30% 8%;
+    --popover-foreground: 180 70% 95%;
+    --primary: 185 90% 50%; /* Bright Cyan */
     --primary-foreground: 0 0% 100%;
-    --secondary: 25 40% 20%;
-    --secondary-foreground: 30 70% 95%;
-    --muted: 25 40% 20%;
-    --muted-foreground: 25 30% 65%;
-    --accent: 25 40% 20%;
-    --accent-foreground: 30 70% 95%;
-    --destructive: 0 63% 40%;
-    --destructive-foreground: 30 70% 95%;
+    --secondary: 217 40% 20%; /* Deep Blue */
+    --secondary-foreground: 180 70% 95%;
+    --muted: 217 40% 20%;
+    --muted-foreground: 210 30% 65%;
+    --accent: 217 40% 25%; /* Brighter Deep Blue for accents */
+    --accent-foreground: 180 70% 95%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
     --success: 142 76% 36%;
     --success-foreground: 0 0% 100%;
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
-    --border: 25 40% 25%;
-    --input: 25 40% 25%;
-    --ring: 28 100% 55%;
-    --chart-gradient-start: 28 100% 55%;
+    --border: 217 40% 25%;
+    --input: 217 40% 25%;
+    --ring: 185 90% 50%;
+    --chart-gradient-start: 185 90% 50%;
+    --chart-gradient-end: 217 91% 60%;
+    --glass-bg: 210 30% 12%;
+    --glass-border: 217 40% 25%;
+    --positive: 142 76% 46%;
+    --negative: 0 84% 60%;
+  }
+
+  /* 5. Dark Forest Theme (Green + Brown) */
+  [data-theme="dark-forest"] {
+    --background: 120 20% 8%;
+    --foreground: 100 70% 95%;
+    --card: 120 20% 11%;
+    --card-foreground: 100 70% 95%;
+    --popover: 120 20% 8%;
+    --popover-foreground: 100 70% 95%;
+    --primary: 145 90% 45%; /* Bright Green */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 30 20% 20%; /* Dark Brown */
+    --secondary-foreground: 100 70% 95%;
+    --muted: 30 20% 20%;
+    --muted-foreground: 30 30% 65%;
+    --accent: 30 20% 25%; /* Brighter Brown */
+    --accent-foreground: 100 70% 95%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    --border: 30 20% 25%;
+    --input: 30 20% 25%;
+    --ring: 145 90% 45%;
+    --chart-gradient-start: 145 90% 45%;
     --chart-gradient-end: 38 92% 50%;
-    --glass-bg: 25 30% 12%;
-    --glass-border: 25 40% 25%;
+    --glass-bg: 120 20% 11%;
+    --glass-border: 30 20% 25%;
+    --positive: 142 76% 46%;
+    --negative: 0 84% 60%;
+  }
+
+  /* 6. Dark Twilight Theme (Purple + Indigo) */
+  [data-theme="dark-twilight"] {
+    --background: 260 30% 8%;
+    --foreground: 270 70% 95%;
+    --card: 260 30% 12%;
+    --card-foreground: 270 70% 95%;
+    --popover: 260 30% 8%;
+    --popover-foreground: 270 70% 95%;
+    --primary: 265 90% 65%; /* Bright Purple */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 40% 20%; /* Deep Indigo */
+    --secondary-foreground: 270 70% 95%;
+    --muted: 240 40% 20%;
+    --muted-foreground: 260 30% 65%;
+    --accent: 240 40% 25%; /* Brighter Indigo */
+    --accent-foreground: 270 70% 95%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    --border: 240 40% 25%;
+    --input: 240 40% 25%;
+    --ring: 265 90% 65%;
+    --chart-gradient-start: 265 90% 65%;
+    --chart-gradient-end: 350 80% 60%;
+    --glass-bg: 260 30% 12%;
+    --glass-border: 240 40% 25%;
     --positive: 142 76% 46%;
     --negative: 0 84% 60%;
   }
@@ -210,61 +208,36 @@
   * {
     @apply border-border;
   }
-
   body {
     @apply bg-background text-foreground font-sans antialiased;
   }
-
   @keyframes flash-positive {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.6;
-    }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
   }
-
   @keyframes flash-negative {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.6;
-    }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
   }
-
   @keyframes fade-in-up {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 }
 
 @layer utilities {
   .glass-card {
-    /* This applies your glass effect */
-    @apply bg-glass-bg/80 backdrop-blur-lg border border-glass-border rounded-lg shadow-lg;
+    @apply bg-card/80 backdrop-blur-lg border border-border/50 rounded-lg shadow-lg;
   }
-
   .animate-flash-positive {
     animation: flash-positive 0.5s ease-in-out;
   }
-
   .animate-flash-negative {
     animation: flash-negative 0.5s ease-in-out;
   }
-
   .animate-fade-in-up {
     animation: fade-in-up 0.5s ease-out;
   }
-
   .transition-smooth {
     transition: var(--transition-smooth);
   }

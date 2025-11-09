@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"; // Import ToggleGroup
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
   Area,
   Bar,
@@ -14,6 +14,8 @@ import {
   Tooltip,
   Legend,
   CartesianGrid,
+  ReferenceLine, // 1. Import ReferenceLine
+  Rectangle,     // 2. Import Rectangle
 } from "recharts";
 import {
   ChartContainer,
@@ -25,10 +27,9 @@ import {
 } from "@/components/ui/chart";
 import { AreaChart, LineChart } from "lucide-react";
 
-// Get the API URL from the environment
+// ... fetchChartData and interfaces (no change) ...
 const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 
-// Define the shape of our API data
 interface ChartData {
   time: string;
   close: number | null;
@@ -36,12 +37,10 @@ interface ChartData {
   avg_sentiment: number | null;
 }
 
-// Helper to fetch data
 const fetchChartData = async (
   symbol: string,
   timeframe: string,
 ): Promise<ChartData[]> => {
-  // Pass the timeframe to the API
   const response = await fetch(
     `${API_URL}/api/v1/chart-data?symbol=${symbol}&timeframe=${timeframe}`,
   );
@@ -50,11 +49,9 @@ const fetchChartData = async (
   }
   const data = await response.json();
 
-  // Format the data for the chart
   const isHourly = timeframe === "1W" || timeframe === "1M";
   return data.data.map((d: ChartData) => ({
     ...d,
-    // Format date for X-axis
     time: new Date(d.time).toLocaleDateString(undefined, {
       month: isHourly ? "numeric" : "short",
       day: isHourly ? "numeric" : "numeric",
@@ -68,7 +65,7 @@ const fetchChartData = async (
   }));
 };
 
-// Define our chart's series, colors, and labels
+// ... chartConfig (no change) ...
 const chartConfig = {
   close: {
     label: "Price",
@@ -84,19 +81,29 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
+// 3. Create a custom bar shape component
+const ColoredBar = (props: any) => {
+  const { x, y, width, height, value } = props;
+  const color =
+    value > 0 ? "hsl(var(--positive))" : "hsl(var(--negative))";
+  
+  if (width === 0) return null;
+
+  return <Rectangle {...props} fill={color} fillOpacity={0.6} />;
+};
+
 export const MainChart = ({ symbol }: { symbol: string }) => {
-  // --- New State for Controls ---
+  // ... states and useQuery (no change) ...
   const [timeframe, setTimeframe] = useState("1Y");
   const [chartType, setChartType] = useState<"area" | "line">("area");
 
-  // Fetch data using react-query
   const { data, isLoading, error } = useQuery({
-    queryKey: ["chartData", symbol, timeframe], // Add timeframe to the queryKey
-    queryFn: () => fetchChartData(symbol, timeframe), // Pass timeframe to the fetch function
+    queryKey: ["chartData", symbol, timeframe],
+    queryFn: () => fetchChartData(symbol, timeframe),
   });
 
-  // Calculate domains for Y-axes
-  const [priceDomain, trendDomain, sentimentDomain] = useMemo(() => {
+  // ... domains calculation (no change) ...
+    const [priceDomain, trendDomain, sentimentDomain] = useMemo(() => {
     if (!data) return [["auto", "auto"], ["auto", "auto"], ["auto", "auto"]];
 
     const prices = data.map((d) => d.close).filter(Boolean) as number[];
@@ -121,6 +128,7 @@ export const MainChart = ({ symbol }: { symbol: string }) => {
     ];
   }, [data]);
 
+  // ... loading/error states (no change) ...
   const chartTitle = `Analysis: ${symbol} (${timeframe})`;
 
   if (isLoading) {
@@ -145,7 +153,7 @@ export const MainChart = ({ symbol }: { symbol: string }) => {
 
   return (
     <Card className="glass-card p-6 animate-fade-in-up">
-      {/* --- HEADER WITH NEW CONTROLS --- */}
+      {/* --- HEADER (no change) --- */}
       <div className="flex flex-col md:flex-row items-start justify-between mb-6 gap-4">
         <h2 className="text-xl font-semibold">{chartTitle}</h2>
         <div className="flex flex-wrap gap-2">
@@ -180,11 +188,11 @@ export const MainChart = ({ symbol }: { symbol: string }) => {
           </ToggleGroup>
         </div>
       </div>
-      {/* --- END HEADER --- */}
 
       <ChartContainer config={chartConfig} className="h-[400px] w-full">
         <ResponsiveContainer>
           <ComposedChart data={data}>
+            {/* ... CartesianGrid, XAxis, YAxis (no change) ... */}
             <CartesianGrid
               vertical={false}
               stroke="hsl(var(--border))"
@@ -229,13 +237,14 @@ export const MainChart = ({ symbol }: { symbol: string }) => {
               tickMargin={8}
               tickFormatter={(value) => `${value}`}
               stroke="hsl(var(--destructive))"
-              hide={true} // Hide this axis to avoid clutter
+              hide={true}
             />
 
             <Tooltip content={<ChartTooltipContent hideIndicator />} />
 
             <Legend content={<ChartLegendContent />} />
 
+            {/* ... defs (no change) ... */}
             <defs>
               <linearGradient id="fillPrice" x1="0" y1="0" x2="0" y2="1">
                 <stop
@@ -251,7 +260,7 @@ export const MainChart = ({ symbol }: { symbol: string }) => {
               </linearGradient>
             </defs>
 
-            {/* --- Conditional Chart Type --- */}
+            {/* ... Conditional Chart Type (no change) ... */}
             {chartType === "area" ? (
               <Area
                 dataKey="close"
@@ -273,6 +282,7 @@ export const MainChart = ({ symbol }: { symbol: string }) => {
               />
             )}
 
+            {/* ... Google Trends Line (no change) ... */}
             <Line
               dataKey="google_score"
               type="monotone"
@@ -282,11 +292,19 @@ export const MainChart = ({ symbol }: { symbol: string }) => {
               dot={false}
             />
 
+            {/* 4. Add the ReferenceLine */}
+            <ReferenceLine
+              y={0}
+              yAxisId="rightSentiment"
+              stroke="hsl(var(--border))"
+              strokeDasharray="3 3"
+            />
+            
+            {/* 5. Update the Bar to use the custom shape */}
             <Bar
               dataKey="avg_sentiment"
               yAxisId="rightSentiment"
-              fill="var(--color-avg_sentiment)"
-              fillOpacity={0.5}
+              shape={<ColoredBar />}
             />
           </ComposedChart>
         </ResponsiveContainer>

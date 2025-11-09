@@ -6,14 +6,14 @@ import "./index.css";
 createRoot(document.getElementById("root")!).render(
   <ThemeProvider
     attribute="data-theme"
-    defaultTheme="dark-red"
+    defaultTheme="dark-blue"
     themes={[
       "light",
-      "dark-red",
       "dark-blue",
-      "dark-purple",
-      "dark-green", // New
-      "dark-orange", // New
+      "dark-sunset",
+      "dark-ocean",
+      "dark-forest",
+      "dark-twilight",
     ]}
   >
     <App />

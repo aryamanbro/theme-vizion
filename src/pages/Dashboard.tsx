@@ -5,13 +5,14 @@ import { NewsFeed } from "@/components/dashboard/NewsFeed";
 import { SymbolSearch } from "@/components/dashboard/SymbolSearch";
 import { ThemeToggle } from "@/components/dashboard/ThemeToggle";
 import { BarChart3 } from "lucide-react";
+import { AddSymbol } from "@/components/dashboard/AddSymbol"; // Import the new component
 
 const Dashboard = () => {
   const [selectedSymbol, setSelectedSymbol] = useState("TSLA"); // Default to TSLA
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
+      {/* Header (no change) ... */}
       <header className="border-b border-border glass-card sticky top-0 z-40">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
@@ -45,22 +46,25 @@ const Dashboard = () => {
             </div>
             
             <LiveTicker symbol={selectedSymbol} />
+
+            {/* --- ADD THE NEW COMPONENT HERE --- */}
+            <AddSymbol />
           </div>
 
-          {/* Main Chart Area (now wider) */}
+          {/* Main Chart Area (no change) */}
           <div className="lg:col-span-9">
             <MainChart symbol={selectedSymbol} />
           </div>
         </div>
 
-        {/* Bottom Section - Sentiment News Feeds */}
+        {/* Bottom Section (no change) ... */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
           <NewsFeed symbol={selectedSymbol} sentiment="positive" />
           <NewsFeed symbol={selectedSymbol} sentiment="negative" />
         </div>
       </main>
 
-      {/* Footer */}
+      {/* Footer (no change) ... */}
       <footer className="border-t border-border glass-card mt-12">
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">

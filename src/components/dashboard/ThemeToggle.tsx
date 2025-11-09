@@ -31,26 +31,27 @@ export const ThemeToggle = () => {
           <Sun className="mr-2 h-4 w-4" />
           <span>Light</span>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark-red")}>
-          <Paintbrush className="mr-2 h-4 w-4" />
-          <span>Dark Red</span>
-        </DropdownMenuItem>
+        
+        {/* --- Duo-Tone Themes --- */}
         <DropdownMenuItem onClick={() => setTheme("dark-blue")}>
           <Paintbrush className="mr-2 h-4 w-4" />
           <span>Dark Blue</span>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark-purple")}>
+        <DropdownMenuItem onClick={() => setTheme("dark-sunset")}>
           <Paintbrush className="mr-2 h-4 w-4" />
-          <span>Dark Purple</span>
+          <span>Dark Sunset</span>
         </DropdownMenuItem>
-        {/* --- ADD THESE TWO --- */}
-        <DropdownMenuItem onClick={() => setTheme("dark-green")}>
+        <DropdownMenuItem onClick={() => setTheme("dark-ocean")}>
           <Paintbrush className="mr-2 h-4 w-4" />
-          <span>Dark Green</span>
+          <span>Dark Ocean</span>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark-orange")}>
+        <DropdownMenuItem onClick={() => setTheme("dark-forest")}>
           <Paintbrush className="mr-2 h-4 w-4" />
-          <span>Dark Orange</span>
+          <span>Dark Forest</span>
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme("dark-twilight")}>
+          <Paintbrush className="mr-2 h-4 w-4" />
+          <span>Dark Twilight</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
