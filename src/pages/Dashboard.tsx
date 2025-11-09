@@ -4,22 +4,30 @@ import { MainChart } from "@/components/dashboard/MainChart";
 import { NewsFeed } from "@/components/dashboard/NewsFeed";
 import { SymbolSearch } from "@/components/dashboard/SymbolSearch";
 import { ThemeToggle } from "@/components/dashboard/ThemeToggle";
-import { BarChart3 } from "lucide-react";
-import { AddSymbol } from "@/components/dashboard/AddSymbol"; // Import the new component
+import { TrendingUp } from "lucide-react"; // 1. Import a new icon
+import { AddSymbol } from "@/components/dashboard/AddSymbol";
+import { GlobalLoadingIndicator } from "@/components/dashboard/GlobalLoadingIndicator";
 
 const Dashboard = () => {
   const [selectedSymbol, setSelectedSymbol] = useState("TSLA"); // Default to TSLA
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header (no change) ... */}
+      <GlobalLoadingIndicator />
+
+      {/* Header */}
       <header className="border-b border-border glass-card sticky top-0 z-40">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
+            
+              {/* --- THIS IS THE CHANGE --- */}
+              {/* We are using the TrendingUp icon */}
               <div className="p-2 bg-primary rounded-lg">
-                <BarChart3 className="h-6 w-6 text-primary-foreground" />
+                <TrendingUp className="h-6 w-6 text-primary-foreground" />
               </div>
+              {/* --- END OF CHANGE --- */}
+
               <div>
                 <h1 className="text-2xl font-bold">FinSent Dashboard</h1>
                 <p className="text-sm text-muted-foreground">
@@ -46,25 +54,24 @@ const Dashboard = () => {
             </div>
             
             <LiveTicker symbol={selectedSymbol} />
-
-            {/* --- ADD THE NEW COMPONENT HERE --- */}
+            
             <AddSymbol />
           </div>
 
-          {/* Main Chart Area (no change) */}
+          {/* Main Chart Area (now wider) */}
           <div className="lg:col-span-9">
             <MainChart symbol={selectedSymbol} />
           </div>
         </div>
 
-        {/* Bottom Section (no change) ... */}
+        {/* Bottom Section - Sentiment News Feeds */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
           <NewsFeed symbol={selectedSymbol} sentiment="positive" />
           <NewsFeed symbol={selectedSymbol} sentiment="negative" />
         </div>
       </main>
 
-      {/* Footer (no change) ... */}
+      {/* Footer */}
       <footer className="border-t border-border glass-card mt-12">
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">

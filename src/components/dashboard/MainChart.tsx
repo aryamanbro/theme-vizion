@@ -14,8 +14,8 @@ import {
   Tooltip,
   Legend,
   CartesianGrid,
-  ReferenceLine, // 1. Import ReferenceLine
-  Rectangle,     // 2. Import Rectangle
+  ReferenceLine,
+  Rectangle,
 } from "recharts";
 import {
   ChartContainer,
@@ -27,9 +27,10 @@ import {
 } from "@/components/ui/chart";
 import { AreaChart, LineChart } from "lucide-react";
 
-// ... fetchChartData and interfaces (no change) ...
+// Get the API URL from the environment
 const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 
+// Define the shape of our API data
 interface ChartData {
   time: string;
   close: number | null;
@@ -37,6 +38,7 @@ interface ChartData {
   avg_sentiment: number | null;
 }
 
+// Helper to fetch data
 const fetchChartData = async (
   symbol: string,
   timeframe: string,
@@ -49,9 +51,11 @@ const fetchChartData = async (
   }
   const data = await response.json();
 
+  // Format the data for the chart
   const isHourly = timeframe === "1W" || timeframe === "1M";
   return data.data.map((d: ChartData) => ({
     ...d,
+    // Format date for X-axis
     time: new Date(d.time).toLocaleDateString(undefined, {
       month: isHourly ? "numeric" : "short",
       day: isHourly ? "numeric" : "numeric",
@@ -65,7 +69,7 @@ const fetchChartData = async (
   }));
 };
 
-// ... chartConfig (no change) ...
+// Define our chart's series, colors, and labels
 const chartConfig = {
   close: {
     label: "Price",
@@ -81,54 +85,72 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-// 3. Create a custom bar shape component
+//
+// --- THIS IS THE FIX ---
+// We must check if the value is null. If it is, we render nothing.
+//
 const ColoredBar = (props: any) => {
   const { x, y, width, height, value } = props;
+
+  // If value is null, or width is 0, don't render the bar
+  if (width === 0 || value === null || value === undefined) {
+    return null;
+  }
+
   const color =
     value > 0 ? "hsl(var(--positive))" : "hsl(var(--negative))";
   
-  if (width === 0) return null;
-
   return <Rectangle {...props} fill={color} fillOpacity={0.6} />;
 };
 
 export const MainChart = ({ symbol }: { symbol: string }) => {
-  // ... states and useQuery (no change) ...
   const [timeframe, setTimeframe] = useState("1Y");
   const [chartType, setChartType] = useState<"area" | "line">("area");
 
+  // Fetch data using react-query
   const { data, isLoading, error } = useQuery({
     queryKey: ["chartData", symbol, timeframe],
     queryFn: () => fetchChartData(symbol, timeframe),
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
-  // ... domains calculation (no change) ...
-    const [priceDomain, trendDomain, sentimentDomain] = useMemo(() => {
+  //
+  // --- THIS LOGIC IS ALSO IMPROVED ---
+  // More robustly calculates the Y-axis domains
+  //
+  const [priceDomain, trendDomain, sentimentDomain] = useMemo(() => {
     if (!data) return [["auto", "auto"], ["auto", "auto"], ["auto", "auto"]];
 
+    // Get all non-null numbers from the data
     const prices = data.map((d) => d.close).filter(Boolean) as number[];
     const trends = data.map((d) => d.google_score).filter(Boolean) as number[];
     const sentiments = data
       .map((d) => d.avg_sentiment)
       .filter(Boolean) as number[];
 
-    const priceMin = prices.length ? Math.min(...prices) : 0;
-    const priceMax = prices.length ? Math.max(...prices) : 100;
+    // Helper to get a min/max domain with padding
+    const getDomain = (arr: number[], defaultMin: number, defaultMax: number): [number, number] => {
+      if (arr.length === 0) return [defaultMin, defaultMax];
+      
+      const min = Math.min(...arr);
+      const max = Math.max(...arr);
+      const padding = (max - min) * 0.1; // 10% padding
+      
+      return [Math.floor(min - padding), Math.ceil(max + padding)];
+    };
 
-    const trendMin = trends.length ? Math.min(...trends) : 0;
-    const trendMax = trends.length ? Math.max(...trends) : 100;
+    const priceDomain = getDomain(prices, 0, 100);
+    const trendDomain = getDomain(trends, 0, 100);
+    
+    // For sentiment, we want the domain to be symmetrical around 0
+    const sentimentArr = getDomain(sentiments, -1, 1);
+    const maxSent = Math.max(Math.abs(sentimentArr[0]), Math.abs(sentimentArr[1]), 1.0);
+    const sentimentDomain: [number, number] = [-maxSent, maxSent];
 
-    const sentMin = sentiments.length ? Math.min(...sentiments, -1) : -1;
-    const sentMax = sentiments.length ? Math.max(...sentiments, 1) : 1;
 
-    return [
-      [Math.floor(priceMin * 0.95), Math.ceil(priceMax * 1.05)],
-      [Math.floor(trendMin * 0.9), Math.ceil(trendMax * 1.1)],
-      [Math.max(-1, sentMin * 1.1), Math.min(1, sentMax * 1.1)],
-    ];
+    return [priceDomain, trendDomain, sentimentDomain];
   }, [data]);
 
-  // ... loading/error states (no change) ...
   const chartTitle = `Analysis: ${symbol} (${timeframe})`;
 
   if (isLoading) {
@@ -153,7 +175,7 @@ export const MainChart = ({ symbol }: { symbol: string }) => {
 
   return (
     <Card className="glass-card p-6 animate-fade-in-up">
-      {/* --- HEADER (no change) --- */}
+      {/* --- HEADER WITH NEW CONTROLS --- */}
       <div className="flex flex-col md:flex-row items-start justify-between mb-6 gap-4">
         <h2 className="text-xl font-semibold">{chartTitle}</h2>
         <div className="flex flex-wrap gap-2">
@@ -188,11 +210,11 @@ export const MainChart = ({ symbol }: { symbol: string }) => {
           </ToggleGroup>
         </div>
       </div>
+      {/* --- END HEADER --- */}
 
       <ChartContainer config={chartConfig} className="h-[400px] w-full">
         <ResponsiveContainer>
           <ComposedChart data={data}>
-            {/* ... CartesianGrid, XAxis, YAxis (no change) ... */}
             <CartesianGrid
               vertical={false}
               stroke="hsl(var(--border))"
@@ -237,14 +259,13 @@ export const MainChart = ({ symbol }: { symbol: string }) => {
               tickMargin={8}
               tickFormatter={(value) => `${value}`}
               stroke="hsl(var(--destructive))"
-              hide={true}
+              hide={true} // Hide this axis to avoid clutter
             />
 
             <Tooltip content={<ChartTooltipContent hideIndicator />} />
 
             <Legend content={<ChartLegendContent />} />
 
-            {/* ... defs (no change) ... */}
             <defs>
               <linearGradient id="fillPrice" x1="0" y1="0" x2="0" y2="1">
                 <stop
@@ -260,7 +281,7 @@ export const MainChart = ({ symbol }: { symbol: string }) => {
               </linearGradient>
             </defs>
 
-            {/* ... Conditional Chart Type (no change) ... */}
+            {/* --- Conditional Chart Type --- */}
             {chartType === "area" ? (
               <Area
                 dataKey="close"
@@ -270,6 +291,7 @@ export const MainChart = ({ symbol }: { symbol: string }) => {
                 strokeWidth={2}
                 yAxisId="left"
                 dot={false}
+                connectNulls={true} // Connect gaps in price data
               />
             ) : (
               <Line
@@ -279,10 +301,10 @@ export const MainChart = ({ symbol }: { symbol: string }) => {
                 strokeWidth={2}
                 yAxisId="left"
                 dot={false}
+                connectNulls={true} // Connect gaps in price data
               />
             )}
 
-            {/* ... Google Trends Line (no change) ... */}
             <Line
               dataKey="google_score"
               type="monotone"
@@ -290,9 +312,10 @@ export const MainChart = ({ symbol }: { symbol: string }) => {
               strokeWidth={2}
               yAxisId="rightTrends"
               dot={false}
+              connectNulls={true} // Connect gaps in trends data
             />
 
-            {/* 4. Add the ReferenceLine */}
+            {/* Reference line at 0 for sentiment */}
             <ReferenceLine
               y={0}
               yAxisId="rightSentiment"
@@ -300,11 +323,10 @@ export const MainChart = ({ symbol }: { symbol: string }) => {
               strokeDasharray="3 3"
             />
             
-            {/* 5. Update the Bar to use the custom shape */}
             <Bar
               dataKey="avg_sentiment"
               yAxisId="rightSentiment"
-              shape={<ColoredBar />}
+              shape={<ColoredBar />} // Use the safe, custom bar
             />
           </ComposedChart>
         </ResponsiveContainer>

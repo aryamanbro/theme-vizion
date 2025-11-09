@@ -44,9 +44,8 @@ export const NewsFeed = ({ symbol, sentiment }: NewsFeedProps) => {
   } = useQuery({
     queryKey: ["news", symbol, sentiment],
     queryFn: () => fetchNews(symbol, sentiment),
-    // --- THIS IS THE FIX ---
-    // Add a refetch interval to automatically check for new news
-    refetchInterval: NEWS_REFETCH_INTERVAL, 
+    refetchInterval: NEWS_REFETCH_INTERVAL,
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
   const formatTimeAgo = (dateString: string) => {

@@ -25,8 +25,8 @@ export const LiveTicker = ({ symbol }: { symbol: string }) => {
   const { data, error, isLoading } = useQuery({
     queryKey: ["livePrice", symbol],
     queryFn: () => fetchLivePrice(symbol),
-    // This makes it real-time!
     refetchInterval: 10000, // 10 seconds
+    staleTime: 1000 * 60, // 1 minute
   });
 
   // We'll keep this state for the flash animation
