@@ -51,20 +51,29 @@ const fetchChartData = async (
   }
   const data = await response.json();
 
-  // Format the data for the chart
   const isHourly = timeframe === "1W" || timeframe === "1M";
-  return data.data.map((d: ChartData) => ({
-    ...d,
-    // Format date for X-axis
+
+  return data.data.map((d: any) => ({
+    // --- MATCH BACKEND FIELD NAMES ---
     time: new Date(d.time).toLocaleDateString(undefined, {
       month: isHourly ? "numeric" : "short",
       day: isHourly ? "numeric" : "numeric",
       hour: isHourly ? "numeric" : undefined,
     }),
-    close: d.close ? parseFloat(d.close.toFixed(2)) : null,
-    google_score: d.google_score ? parseFloat(d.google_score.toFixed(2)) : null,
-    avg_sentiment: d.avg_sentiment
-      ? parseFloat(d.avg_sentiment.toFixed(2))
+
+    // map backend "price" → frontend "close"
+    close: d.price !== null && d.price !== undefined
+      ? Number(d.price)
+      : null,
+
+    // map backend "google_trends_score" → "google_score"
+    google_score: d.google_trends_score !== null && d.google_trends_score !== undefined
+      ? Number(d.google_trends_score)
+      : null,
+
+    // map backend "sentiment" → "avg_sentiment"
+    avg_sentiment: d.sentiment !== null && d.sentiment !== undefined
+      ? Number(d.sentiment)
       : null,
   }));
 };
