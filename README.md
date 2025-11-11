@@ -1,6 +1,9 @@
+
+
+
 # FinSent Dashboard — Real-Time Financial Sentiment Analysis
 
-FinSent Dashboard is a modern, high-performance web application that provides **real-time financial market insights enhanced with sentiment intelligence**. It unifies live market data, social sentiment analysis, and Google Trends interest into a single, powerful analytics dashboard built for speed and clarity.
+FinSent Dashboard is a high-performance, modern web application that provides **real-time financial market insights enhanced with sentiment intelligence**. It unifies live market data, social sentiment analysis, and Google Trends interest into a single, powerful analytics dashboard built for speed, clarity, and interactivity.
 
 ---
 
@@ -8,69 +11,72 @@ FinSent Dashboard is a modern, high-performance web application that provides **
 
 ### 1. Advanced Financial Data & Visualization
 
-- **Live Price Tickers:** Real-time stock and crypto prices streamed for immediate tracking.
-- **Composed Multi-Layer Chart:** Interactive Recharts visualization combining:
-  - Price Action (Area/Line)
-  - User Sentiment (Bar)
-  - Google Trends Interest (Line)
-- **Categorized Sentiment News:** Auto-curated positive and negative news feed relevant to the selected symbol.
+* **Live Price Tickers** — Real-time stock and crypto price streaming for instant tracking.
+* **Composed Multi-Layer Chart** using Recharts:
+
+  * Price Action (Area/Line)
+  * User Sentiment (Bar)
+  * Google Trends Interest (Line)
+* **Categorized Sentiment News** — Auto-curated positive and negative news feeds relevant to the selected symbol.
 
 ---
 
 ### 2. Cutting-Edge User Experience
 
-- **Dynamic Multi-Theme Support:**  
-  Themes include: light, dark-blue, dark-sunset, dark-ocean, dark-forest, dark-twilight.  
-  Powered by `next-themes` + custom Tailwind variants.
+* **Dynamic Multi-Theme Interface**
+  Includes: light, dark-blue, dark-sunset, dark-ocean, dark-forest, dark-twilight.
+  Powered by `next-themes` and custom Tailwind CSS variants.
 
-- **Enhanced Cold Start Loading Screen:**  
-  Includes:
-  - Real-time backend handshake polling
-  - Mini-games (Market Prediction, Price Guess)
-  - Simulated loading progress bar
-  - Debug mode to manually trigger loading screen
-  - Button to enter/exit loading screen anytime
+* **Enhanced Cold-Start Loading Experience**
+  Smooth experience even when backend is waking up:
 
-- **Fast Navigation & UI:** Powered by Vite for low-latency rendering and instant HMR.
+  * Real-time backend handshake polling
+  * Interactive mini-games (Market Prediction, Price Guess)
+  * Simulated progress bar
+  * Developer debug mode to manually test loading screen
+  * Button to enter/exit loading screen anytime, even after app is loaded
+
+* **Optimized for Speed**
+  Powered by Vite for ultra-fast bundling, reduced latency, and instant HMR updates.
 
 ---
 
 ### 3. Admin System Management
 
-- **Admin Symbol Onboarding:**  
-  Add new Stock or Crypto symbols through an admin-protected interface. Requires admin password.
+* **Symbol Onboarding System**
+  Admin interface to add new stock or crypto symbols securely.
+  Protected by admin password.
 
 ---
 
 ## Tech Stack
 
-| Component | Technology | Version | Description |
-|----------|------------|---------|-------------|
-| Frontend | React | 18.3.1 | Core framework |
-| Language | TypeScript | 5.8.3 | Type safety & tooling |
-| Styling | Tailwind CSS | 3.4.17 | Utility-first CSS |
-| Build Tool | Vite | 5.4.19 | Fast bundler + dev server |
-| State Management | @tanstack/react-query | 5.83.0 | Optimized server-state handling |
-| Charts | Recharts | 2.15.4 | Declarative charting |
-| Routing | react-router-dom | 6.30.1 | Client-side routing |
-| Forms | react-hook-form + Zod | 7.61.1 + 3.25.76 | Form handling + validation |
+| Component        | Technology            | Version          | Description                     |
+| ---------------- | --------------------- | ---------------- | ------------------------------- |
+| Frontend         | React                 | 18.3.1           | Core UI framework               |
+| Language         | TypeScript            | 5.8.3            | Strong typing, tooling          |
+| Styling          | Tailwind CSS          | 3.4.17           | Utility-first styling           |
+| Build Tool       | Vite                  | 5.4.19           | Fast dev/build system           |
+| State Management | @tanstack/react-query | 5.83.0           | Optimized server-state handling |
+| Charting         | Recharts              | 2.15.4           | Declarative charting            |
+| Routing          | react-router-dom      | 6.30.1           | Client-side navigation          |
+| Forms            | react-hook-form + Zod | 7.61.1 + 3.25.76 | Form validation & handling      |
 
 ---
 
 ## Project Structure
 
+```
 src/
-│── components/ # UI components, layout, loading screens
-│── hooks/ # Custom hooks for API, polling, games
-│── pages/ # Page-level routes (Dashboard, Admin, Loading)
-│── context/ # Theme and global providers
-│── utils/ # Formatters, helpers, API utilities
-│── assets/ # Icons, images
-│── config/ # App-wide config & environment
-│── styles/ # Tailwind custom themes
-
-yaml
-Copy code
+│── components/       # Reusable UI and loading screen components
+│── hooks/            # API polling, mini-games, backend handshake logic
+│── pages/            # Dashboard, Admin Panel, Loading Screen
+│── context/          # Theme + global providers
+│── utils/            # Formatters, helpers, API utilities
+│── assets/           # Icons, fonts, images
+│── config/           # Environment configuration
+│── styles/           # Tailwind custom themes and overrides
+```
 
 ---
 
@@ -78,36 +84,62 @@ Copy code
 
 ### Prerequisites
 
-- Node.js **>= 18** (recommended: >= 20)
+* Node.js **18 or above** (recommended: 20)
 
 ---
 
 ### Installation
 
-```bash
+Clone the repository:
+
+```
 git clone <repository-url>
 cd theme-vizion
+```
+
+Install dependencies:
+
+```
 npm install
-Run Locally
-bash
-Copy code
+```
+
+---
+
+### Run Locally
+
+Start the development server:
+
+```
 npm run dev
-The app will start with Hot Module Replacement enabled.
+```
 
-Default backend endpoint:
+The app will run with HMR (Hot Module Replacement).
 
-cpp
-Copy code
+Default backend URL:
+
+```
 http://127.0.0.1:8000
-To override:
+```
 
-ini
-Copy code
+Override using environment variable:
+
+```
 VITE_API_URL=<your_backend_url>
-Build for Production
-bash
-Copy code
+```
+
+---
+
+## Build for Production
+
+Build optimized assets:
+
+```
 npm run build
-Output is generated in the /dist folder.
-Supports SPA routing with Vercel rewrites.
+```
+
+This produces the production build in the `/dist` folder.
+SPA routing is pre-configured via Vercel rewrites.
+
+---
+
 
