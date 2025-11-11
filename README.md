@@ -1,73 +1,113 @@
-FinSent Dashboard: Real-time Financial Sentiment Analysis
-FinSent Dashboard is a high-performance, modern web application designed to provide real-time financial market insights fused with sentiment data. Built for speed and a superior user experience, it visualizes complex market trends, social media sentiment, and Google Trends interest in a single, beautiful dashboard.
+# FinSent Dashboard — Real-Time Financial Sentiment Analysis
 
-🌟 Key Features
-1. Advanced Financial Data & Visualization
-Live Price Monitoring: Real-time tickers for stocks and crypto, enabling immediate tracking of key assets.
+FinSent Dashboard is a modern, high-performance web application that provides **real-time financial market insights enhanced with sentiment intelligence**. It unifies live market data, social sentiment analysis, and Google Trends interest into a single, powerful analytics dashboard built for speed and clarity.
 
-Composed Charting: Utilizes Recharts for an interactive main chart that combines price action (Area/Line), user sentiment (Bar), and Google Trends data for multi-layered analysis.
+---
 
-Intelligent News Feeds: Separate, categorized feeds display positive and negative news articles relevant to the selected symbol, curated to influence market sentiment.
+## Features
 
-2. Cutting-Edge User Experience
-Themed Aesthetics: Offers a dynamic, multi-theme UI system (including light, dark-blue, dark-sunset, dark-ocean, dark-forest, and dark-twilight) powered by next-themes and custom Tailwind CSS variants for deep personalization.
+### 1. Advanced Financial Data & Visualization
 
-Enhanced Cold Start UX: Addresses backend cold-start delays with an interactive loading screen:
+- **Live Price Tickers:** Real-time stock and crypto prices streamed for immediate tracking.
+- **Composed Multi-Layer Chart:** Interactive Recharts visualization combining:
+  - Price Action (Area/Line)
+  - User Sentiment (Bar)
+  - Google Trends Interest (Line)
+- **Categorized Sentiment News:** Auto-curated positive and negative news feed relevant to the selected symbol.
 
-Real-time Handshake: Actively polls the backend until it's awake, ensuring instant transition once connected.
+---
 
-Engaging Mini-Games: Users can play interactive games like Market Prediction and Price Guess while the system warms up, with a button to cycle between them.
+### 2. Cutting-Edge User Experience
 
-Simulated Progress: A smooth, simulated loading bar provides constant visual feedback.
+- **Dynamic Multi-Theme Support:**  
+  Themes include: light, dark-blue, dark-sunset, dark-ocean, dark-forest, dark-twilight.  
+  Powered by `next-themes` + custom Tailwind variants.
 
-Developer Debug Mode: Includes a function to manually trigger the loading experience for reliable UI testing.
+- **Enhanced Cold Start Loading Screen:**  
+  Includes:
+  - Real-time backend handshake polling
+  - Mini-games (Market Prediction, Price Guess)
+  - Simulated loading progress bar
+  - Debug mode to manually trigger loading screen
+  - Button to enter/exit loading screen anytime
 
-3. System Management
-Symbol Onboarding: An Admin interface allows authorized users to quickly add new Stock or Crypto symbols to the system (requires Admin Password).
+- **Fast Navigation & UI:** Powered by Vite for low-latency rendering and instant HMR.
 
-💻 Tech Stack Overview
-Component	Technology	Role & Version
-Frontend	React	v18.3.1 (Core Library)
-Language	TypeScript	v5.8.3
-Styling	Tailwind CSS	v3.4.17 (Utility Framework)
-Build Tool	Vite	v5.4.19 (Fast Build & Dev Server)
-State Mgt	@tanstack/react-query	v5.83.0 (Server State Management)
-Charting	Recharts	v2.15.4 (Declarative Chart Library)
-Routing	react-router-dom	v6.30.1
-Form	react-hook-form/Zod	v7.61.1 & v3.25.76 (Form Handling & Validation)
+---
 
-Export to Sheets
+### 3. Admin System Management
 
-🚀 Getting Started
-Follow these steps to set up and run the project locally.
+- **Admin Symbol Onboarding:**  
+  Add new Stock or Crypto symbols through an admin-protected interface. Requires admin password.
 
-Prerequisites
-Ensure you have Node.js (>=18.0.0 or >=20.0.0 for Vite, see) installed on your system.
+---
 
-Installation
-Clone the repository:
+## Tech Stack
 
-Bash
+| Component | Technology | Version | Description |
+|----------|------------|---------|-------------|
+| Frontend | React | 18.3.1 | Core framework |
+| Language | TypeScript | 5.8.3 | Type safety & tooling |
+| Styling | Tailwind CSS | 3.4.17 | Utility-first CSS |
+| Build Tool | Vite | 5.4.19 | Fast bundler + dev server |
+| State Management | @tanstack/react-query | 5.83.0 | Optimized server-state handling |
+| Charts | Recharts | 2.15.4 | Declarative charting |
+| Routing | react-router-dom | 6.30.1 | Client-side routing |
+| Forms | react-hook-form + Zod | 7.61.1 + 3.25.76 | Form handling + validation |
 
+---
+
+## Project Structure
+
+src/
+│── components/ # UI components, layout, loading screens
+│── hooks/ # Custom hooks for API, polling, games
+│── pages/ # Page-level routes (Dashboard, Admin, Loading)
+│── context/ # Theme and global providers
+│── utils/ # Formatters, helpers, API utilities
+│── assets/ # Icons, images
+│── config/ # App-wide config & environment
+│── styles/ # Tailwind custom themes
+
+yaml
+Copy code
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js **>= 18** (recommended: >= 20)
+
+---
+
+### Installation
+
+```bash
 git clone <repository-url>
 cd theme-vizion
-Install dependencies:
-
-Bash
-
 npm install
-Local Development
-Start the development server: The server will run with HMR enabled, accessible locally at the default host/port defined in vite.config.ts.
-
-Bash
-
+Run Locally
+bash
+Copy code
 npm run dev
-Note: The frontend is configured to call a backend API expected at http://127.0.0.1:8000. Ensure your backend is running, or update the VITE_API_URL environment variable if needed.
+The app will start with Hot Module Replacement enabled.
 
-Build and Deployment
-To prepare the application for production deployment:
+Default backend endpoint:
 
-Bash
+cpp
+Copy code
+http://127.0.0.1:8000
+To override:
 
+ini
+Copy code
+VITE_API_URL=<your_backend_url>
+Build for Production
+bash
+Copy code
 npm run build
-This command bundles the application for production, optimizing performance and outputting files to the /dist directory. The deployment is pre-configured with a Vercel rewrite rule directing all traffic to index.html.
+Output is generated in the /dist folder.
+Supports SPA routing with Vercel rewrites.
+
