@@ -1,97 +1,74 @@
-import { useState } from "react";
-import { LiveTicker } from "@/components/dashboard/LiveTicker";
-import { MainChart } from "@/components/dashboard/MainChart";
-import { NewsFeed } from "@/components/dashboard/NewsFeed";
-import { SymbolSearch } from "@/components/dashboard/SymbolSearch";
-import { ThemeToggle } from "@/components/dashboard/ThemeToggle";
-import { TrendingUp } from "lucide-react"; // 1. Import a new icon
-import { AddSymbol } from "@/components/dashboard/AddSymbol";
-import { GlobalLoadingIndicator } from "@/components/dashboard/GlobalLoadingIndicator";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { MainDashboardContent } from "@/components/dashboard/MainDashboardContent";
+import { LoadingView } from "@/components/dashboard/LoadingView";
 
-const Dashboard = () => {
-  const [selectedSymbol, setSelectedSymbol] = useState("TSLA"); // Default to TSLA
+const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+const PING_ENDPOINT = `${API_URL}/ping`;
+const POLLING_INTERVAL = 1500; // 1.5 seconds
+const MAX_ATTEMPTS = 8; // Max attempts for progress to reach 100%
 
+const DashboardWrapper = () => {
+  const [isBackendReady, setIsBackendReady] = useState(false);
+  const [debugMode, setDebugMode] = useState(false);
+  const [attemptCount, setAttemptCount] = useState(0);
+  // Track the symbol even in the wrapper, so we can pass it to LoadingView
+  const [selectedSymbol, setSelectedSymbol] = useState("TSLA"); 
+
+  const isInitialLoading = !isBackendReady && !debugMode;
+
+  const progress = debugMode
+    ? 80 // Lock progress bar at 80% in debug mode
+    : Math.min(100, attemptCount * (100 / MAX_ATTEMPTS));
+
+  // --- Polling Logic ---
+  useEffect(() => {
+    // Stop polling if already ready or in debug mode
+    if (isBackendReady || debugMode) {
+      return;
+    }
+
+    const pollBackend = async () => {
+      try {
+        await axios.get(PING_ENDPOINT, { timeout: 1000 });
+        // Success: Backend is awake
+        setIsBackendReady(true);
+      } catch (error) {
+        // Failure: Backend is still sleeping or unavailable
+        setAttemptCount((prev) => prev + 1);
+        // Continue polling...
+      }
+    };
+
+    // Start polling immediately
+    pollBackend();
+
+    // Set interval for subsequent polls
+    const intervalId = setInterval(pollBackend, POLLING_INTERVAL);
+
+    // Cleanup interval on component unmount or state change
+    return () => clearInterval(intervalId);
+  }, [isBackendReady, debugMode]);
+
+  if (isInitialLoading || debugMode) {
+    return (
+      <LoadingView
+        progress={progress}
+        debugMode={debugMode}
+        onExitDebugMode={() => setDebugMode(false)}
+        currentSymbol={selectedSymbol} // Pass current symbol to the loading view
+      />
+    );
+  }
+
+  // Once ready, render the full dashboard content
   return (
-    <div className="min-h-screen bg-background">
-      <GlobalLoadingIndicator />
-
-      {/* Header */}
-      <header className="border-b border-border glass-card sticky top-0 z-40">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-            
-              {/* --- THIS IS THE CHANGE --- */}
-              {/* We are using the TrendingUp icon */}
-              <div className="p-2 bg-primary rounded-lg">
-                <TrendingUp className="h-6 w-6 text-primary-foreground" />
-              </div>
-              {/* --- END OF CHANGE --- */}
-
-              <div>
-                <h1 className="text-2xl font-bold">FinSent Dashboard</h1>
-                <p className="text-sm text-muted-foreground">
-                  Real-time Financial Insights
-                </p>
-              </div>
-            </div>
-            <ThemeToggle />
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Left Sidebar - Search & Ticker */}
-          <div className="lg:col-span-3 space-y-6">
-            <div className="glass-card p-6 animate-fade-in-up relative z-10">
-              <h2 className="text-lg font-semibold mb-4">Symbol Search</h2>
-              <SymbolSearch
-                onSelectSymbol={setSelectedSymbol}
-                currentSymbol={selectedSymbol}
-              />
-            </div>
-            
-            <LiveTicker symbol={selectedSymbol} />
-            
-            <AddSymbol />
-          </div>
-
-          {/* Main Chart Area (now wider) */}
-          <div className="lg:col-span-9">
-            <MainChart symbol={selectedSymbol} />
-          </div>
-        </div>
-
-        {/* Bottom Section - Sentiment News Feeds */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-          <NewsFeed symbol={selectedSymbol} sentiment="positive" />
-          <NewsFeed symbol={selectedSymbol} sentiment="negative" />
-        </div>
-      </main>
-
-      {/* Footer */}
-      <footer className="border-t border-border glass-card mt-12">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
-            <p>© 2025 FinSent Dashboard. All rights reserved.</p>
-            <div className="flex gap-6">
-              <a href="#" className="hover:text-primary transition-smooth">
-                About
-              </a>
-              <a href="#" className="hover:text-primary transition-smooth">
-                API Docs
-              </a>
-              <a href="#" className="hover:text-primary transition-smooth">
-                Support
-              </a>
-            </div>
-          </div>
-        </div>
-      </footer>
-    </div>
+    <MainDashboardContent 
+      onEnterDebugMode={() => setDebugMode(true)} 
+      selectedSymbol={selectedSymbol}
+      setSelectedSymbol={setSelectedSymbol}
+    />
   );
 };
 
-export default Dashboard;
+export default DashboardWrapper;
